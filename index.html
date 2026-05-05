@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R Cruisine by Richa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #faf7f2;
+            color: #333;
+            overflow-x: hidden;
+        }
+        /* CSS: Add this to your <style> section */
+/* Transparent Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    padding: 18px 0;
+    background: transparent;
+    transition: all 0.4s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(74, 55, 41, 0.92);
+    backdrop-filter: blur(12px);
+    padding: 12px 0;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.nav-links a:hover {
+    color: #f0d5b6;
+}
+
+.nav-order {
+    background: #fff;
+    color: #4a3729 !important;
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-weight: 500 !important;
+    text-shadow: none !important;
+    transition: all 0.3s ease;
+}
+
+.nav-order:hover {
+    background: #f0d5b6;
+    transform: scale(1.05);
+}
+
+.nav-toggle {
+    display: none;
+    font-size: 1.8rem;
+    color: #fff;
+    cursor: pointer;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(74, 55, 41, 0.95);
+        backdrop-filter: blur(12px);
+        padding: 20px 0;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .nav-toggle {
+        display: block;
+    }
+    
+    .nav-logo {
+        font-size: 1.3rem;
+    }
+}
+
+        /* ----- UTILITY ----- */
+        .section {
+            padding: 80px 20px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            color: #4a3729;
+            margin-bottom: 16px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #6b4f3b;
+            border-radius: 2px;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 650px;
+            margin: 20px auto 0;
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 34px;
+            background: #6b4f3b;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(107, 79, 59, 0.25);
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: #4f3a2a;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(107, 79, 59, 0.35);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #fff;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+        }
+
+        /* ----- HEADER / HERO ----- */
+        header {
+            position: relative;
+            height: 100vh;
+            min-height: 580px;
+            background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93') no-repeat center/cover;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(30, 20, 15, 0.45);
+            z-index: 0;
+        }
+
+        header>div {
+            position: relative;
+            z-index: 1;
+            padding: 0 20px;
+            animation: heroFadeIn 1.4s ease forwards;
+        }
+
+        @keyframes heroFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.6rem, 7vw, 4.8rem);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 8px;
+        }
+
+        header h1 span {
+            display: inline-block;
+            animation: shimmer 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes shimmer {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            }
+            100% {
+                text-shadow: 0 0 30px rgba(255, 215, 175, 0.5);
+            }
+        }
+
+        header p {
+            font-size: clamp(1rem, 1.8vw, 1.4rem);
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 28px;
+            opacity: 0.9;
+        }
+
+        /* floating decoration */
+        header::after {
+            content: '✦';
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.6rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: floatDot 2.4s ease-in-out infinite;
+        }
+
+        @keyframes floatDot {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateX(-50%) translateY(-12px);
+                opacity: 0.8;
+            }
+        }
+
+        /* ----- ABOUT ----- */
+        #about p {
+            font-size: 1.15rem;
+            max-width: 720px;
+        }
+
+        /* ----- MENU ----- */
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 28px;
+            margin-top: 32px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 28px 20px 22px;
+            width: 200px;
+            border-radius: 20px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: default;
+            position: relative;
+            border: 1px solid rgba(107, 79, 59, 0.06);
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 18px 40px rgba(107, 79, 59, 0.15);
+            border-color: rgba(107, 79, 59, 0.15);
+        }
+
+        .card .emoji {
+            font-size: 2.2rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .card .name {
+            font-weight: 500;
+            font-size: 1.05rem;
+            color: #2c241e;
+        }
+
+        .card .price {
+            font-weight: 400;
+            color: #6b4f3b;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(107, 79, 59, 0.03), transparent);
+            pointer-events: none;
+        }
+
+        /* ----- GALLERY ----- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .gallery img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 16px;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            opacity: 0;
+            transform: scale(0.92);
+        }
+
+        .gallery img.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .gallery img:hover {
+            transform: scale(1.04) rotate(0.5deg);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.13);
+        }
+
+        /* ----- CONTACT ----- */
+        #contact p {
+            font-size: 1.1rem;
+            margin: 6px 0;
+            color: #444;
+        }
+
+        #contact .contact-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            font-size: 1.05rem;
+        }
+
+        #contact .contact-wrap span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ----- FOOTER ----- */
+        footer {
+            background: #4a3729;
+            color: #e8ddd2;
+            padding: 32px 20px;
+            text-align: center;
+            font-weight: 300;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        footer span {
+            color: #d4b8a2;
+        }
+
+        /* ----- SCROLL ANIMATIONS (JS will add .visible) ----- */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .section {
+                padding: 60px 16px;
+            }
+            .section h2 {
+                font-size: 2rem;
+            }
+            .menu {
+                gap: 18px;
+            }
+            .card {
+                width: 160px;
+                padding: 20px 14px 18px;
+            }
+            .gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 12px;
+            }
+            header h1 {
+                font-size: 2.4rem;
+            }
+            header p {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+            #contact .contact-wrap {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 140px;
+                padding: 16px 10px 14px;
+            }
+            .card .name {
+                font-size: 0.9rem;
+            }
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            header {
+                min-height: 480px;
+            }
+        }
+
+        /* ----- STAGGER HELPERS (menu items) ----- */
+        .menu .card:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+        .menu .card:nth-child(2) {
+            transition-delay: 0.10s;
+        }
+        .menu .card:nth-child(3) {
+            transition-delay: 0.15s;
+        }
+        .menu .card:nth-child(4) {
+            transition-delay: 0.20s;
+        }
+        .menu .card:nth-child(5) {
+            transition-delay: 0.25s;
+        }
+        .menu .card:nth-child(6) {
+            transition-delay: 0.30s;
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML: Add this right after the opening <body> tag -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="#" class="nav-logo">R Cruisine</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="https://wa.me/919999999999" class="nav-order">Order Now</a></li>
+        </ul>
+        <div class="nav-toggle">☰</div>
+    </div>
+</nav>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div>
+            <h1>R <span>Cruisine</span> by Richa</h1>
+            <p>Where taste meets elegance in Panipat</p>
+            <div>
+                <a href="#menu" class="btn">View Menu</a>
+                <a href="https://wa.me/919999999999" class="btn btn-outline">Order Now</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="section fade-up">
+        <h2>About Us</h2>
+        <p>
+            At R Cruisine by Richa, we serve more than just food — we create experiences.
+            From handcrafted beverages to delicious bites, every dish is made with passion
+            and served with warmth.
+        </p>
+    </section>
+
+    <!-- ===== MENU ===== -->
+    <section id="menu" class="section">
+        <h2>Our Menu</h2>
+        <div class="menu">
+            <div class="card"><span class="emoji">☕</span><span class="name">Cold Coffee</span><span class="price">₹120</span></div>
+            <div class="card"><span class="emoji">☕</span><span class="name">Cappuccino</span><span class="price">₹140</span></div>
+            <div class="card"><span class="emoji">🍝</span><span class="name">White Sauce Pasta</span><span class="price">₹180</span></div>
+            <div class="card"><span class="emoji">🥪</span><span class="name">Veg Sandwich</span><span class="price">₹90</span></div>
+            <div class="card"><span class="emoji">🍫</span><span class="name">Brownie with Ice Cream</span><span class="price">₹160</span></div>
+            <div class="card"><span class="emoji">🍕</span><span class="name">Pizza</span><span class="price">₹220</span></div>
+        </div>
+    </section>
+
+    <!-- ===== GALLERY ===== -->
+    <section id="gallery" class="section">
+        <h2>Gallery</h2>
+        <div class="gallery">
+            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085" alt="Coffee" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" alt="Food" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1521305916504-4a1121188589" alt="Dessert" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93" alt="Coffee cup" loading="lazy" />
+        </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="section fade-up">
+        <h2>Contact Us</h2>
+        <div class="contact-wrap">
+            <span>📍 Panipat, Haryana</span>
+            <span>📞 +91 99999 99999</span>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>© 2026 <span>R Cruisine by Richa</span> &nbsp;|&nbsp; Designed for Demo</p>
+    </footer>
+
+    <!-- ===== SCROLL ANIMATION SCRIPT ===== -->
+    <script>
+        (function() {
+            const fadeEls = document.querySelectorAll('.fade-up');
+            const cards = document.querySelectorAll('.card');
+            const galleryImgs = document.querySelectorAll('.gallery img');
+
+            const allTargets = [...fadeEls, ...cards, ...galleryImgs];
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Optional: keep observing for re-trigger if needed
+                        // but we'll unobserve after add for performance
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.18,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            allTargets.forEach(el => observer.observe(el));
+
+            // Also ensure header hero is visible on load (already animated via CSS)
+            // and any elements already in view on load get the class immediately.
+            // Use a small timeout to let the page settle, then check.
+            setTimeout(() => {
+                allTargets.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    const winH = window.innerHeight;
+                    // if element is already in the viewport, mark visible
+                    if (rect.top < winH - 100 && rect.bottom > 0) {
+                        el.classList.add('visible');
+                        observer.unobserve(el);
+                    }
+                });
+            }, 200);
+        })();
+        /* JavaScript: Add this at the end of your <script> block */
+// Navbar scroll effect and mobile toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    // Scroll effect
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 80) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Mobile toggle
+    toggle.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+    });
+
+    // Close menu on link click (mobile)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function() {
+            navLinks.classList.remove('active');
+        });
+    });
+});
+    </script>
+
+</body>
+</html>
